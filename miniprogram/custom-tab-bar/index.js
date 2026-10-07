@@ -1,0 +1,1 @@
+Component({data:{selected:0,tabs:[{path:'/pages/today/index',text:'今日'},{path:'/pages/plans/index',text:'计划'},{path:'/pages/stats/index',text:'统计'}]},methods:{switchTab(event){const index=Number(event.currentTarget.dataset.index);wx.switchTab({url:this.data.tabs[index].path,fail:()=>wx.showToast({title:'切换失败，请重试',icon:'none'})});}}});

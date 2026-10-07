@@ -1,0 +1,4 @@
+/* Shared page styles live in app.wxss. */
+.sync-label { margin-top:16rpx; }
+.template-title { margin-top:32rpx; flex-wrap:wrap; }
+.cycle-stages { margin:16rpx 0 20rpx; font-size:26rpx; line-height:1.6; }

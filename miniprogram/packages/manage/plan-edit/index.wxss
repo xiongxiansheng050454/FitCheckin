@@ -1,0 +1,1 @@
+.days-scroll{margin:36rpx 0}.days{display:flex;gap:10rpx}.day{min-width:104rpx;padding:22rpx 10rpx;background:#f3f6f3;text-align:center;border-radius:8rpx;font-size:26rpx}.selected{background:#18864b;color:white}.day-count{font-size:21rpx;margin-top:10rpx}.order{color:#6a756d;font-size:24rpx;min-width:28rpx}.entry-tools{margin:20rpx 0 0 48rpx}

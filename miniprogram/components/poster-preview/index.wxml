@@ -1,0 +1,12 @@
+<view wx:if="{{visible}}" class="poster-overlay" catchtouchmove="stop">
+ <view class="poster-toolbar"><text class="poster-heading">今日战利品</text><button class="close-button" bindtap="close" aria-label="关闭海报">×</button></view>
+ <scroll-view class="poster-scroll" scroll-y="{{true}}">
+  <picker wx:if="{{captionOptions.length}}" mode="selector" range="{{captionOptions}}" value="{{captionIndex}}" bindchange="changeCaption"><view class="caption"><text>{{selectedCaption}}</text><text class="caption-arrow">⌄</text></view></picker>
+  <image wx:if="{{imagePath}}" class="poster-image" src="{{imagePath}}" mode="widthFix" show-menu-by-longpress="{{true}}" bindtap="preview" />
+  <view wx:elif="{{!error}}" class="instant-preview"><text class="instant-brand">IronPlan</text><text class="instant-label">{{model.volume > 0 ? '今日训练容量 · kg' : '今日有氧 · min'}}</text><text class="instant-value">{{model.volume > 0 ? model.volume : model.cardioMinutes}}</text><text class="instant-caption">{{selectedCaption}}</text><view class="preparing-line"></view><text class="preparing">战绩已达成，海报正在就位</text></view>
+  <view wx:if="{{error}}" class="poster-error"><text>{{error}}</text><button bindtap="retry">重试</button></view>
+  <view wx:if="{{model.pending && imagePath}}" class="pending">本机记录 · 待同步</view>
+ </scroll-view>
+ <view class="poster-actions"><button class="save-button" bindtap="save" loading="{{saving}}" disabled="{{!imagePath || loading || saving}}">保存到相册</button><button wx:if="{{canShareImage}}" class="share-button" bindtap="share" disabled="{{!imagePath || loading}}">分享给微信好友</button><button wx:else class="share-button" open-type="share" disabled="{{!imagePath || loading}}">分享训练卡片</button></view>
+</view>
+<canvas type="2d" id="poster-canvas" class="poster-canvas" />

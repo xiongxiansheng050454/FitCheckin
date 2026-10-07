@@ -1,0 +1,31 @@
+# Dependencies and generated packages
+node_modules/
+miniprogram_npm/
+.cache/
+coverage/
+*.log
+*.tsbuildinfo
+
+# Local WeChat Developer Tools settings
+project.private.config.json
+
+# Credentials and machine-specific configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.codex/
+.agents/
+.aws/
+
+# Editor and operating system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Temporary WeChat preview code
+docs/preview-qr.png

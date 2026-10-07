@@ -1,0 +1,11 @@
+<view class="poster-page">
+ <view class="row between"><text class="subheading">{{title}}</text><text class="badge">IronPlan</text></view>
+ <picker wx:if="{{captionOptions.length}}" mode="selector" range="{{captionOptions}}" value="{{captionIndex}}" bindchange="changeCaption"><view class="caption-select"><view class="caption-label">文案 {{captionIndex + 1}} / {{captionOptions.length}}</view><view class="row between"><text class="grow break">{{selectedCaption}}</text><text class="caption-arrow">⌄</text></view></view></picker>
+ <view wx:if="{{loading}}" class="poster-status muted">海报生成中…</view>
+ <view wx:if="{{error}}" class="notice error">{{error}}</view>
+ <image wx:if="{{imagePath}}" class="poster-image" src="{{imagePath}}" mode="widthFix" show-menu-by-longpress="{{true}}" bindtap="preview" />
+ <view wx:if="{{pending && imagePath}}" class="notice">海报包含本机尚未同步的训练记录</view>
+ <view wx:if="{{imagePath}}" class="actions"><button class="primary" bindtap="save" loading="{{saving}}" disabled="{{saving || loading}}">保存到相册</button><button class="secondary" bindtap="share" disabled="{{loading}}">分享图片</button></view>
+ <view wx:if="{{error && !loading}}" class="actions"><button class="secondary" bindtap="generate">重新生成</button></view>
+ <canvas type="2d" id="poster-canvas" class="poster-canvas" />
+</view>

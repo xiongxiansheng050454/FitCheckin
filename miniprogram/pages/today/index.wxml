@@ -1,0 +1,72 @@
+<view class="page tab-page">
+ <view class="row between"><text class="eyebrow">{{dateLabel}}</text><button class="primary small-button" bindtap="settings">我的</button></view>
+ <view class="heading">今日训练</view>
+ <view wx:if="{{cycleLabel}}" class="muted" style="margin-top:14rpx">{{cycleLabel}}</view><view wx:if="{{needsNextCycle}}" class="notice row between"><text class="grow">最后一周了，接着安排下一程。</text><button class="secondary small-button" bindtap="plans">安排周期</button></view>
+ <view class="row between" style="margin-top:18rpx"><text class="muted grow break">{{planName}}<text wx:if="{{isOverride}}"> · 本周调整</text></text><text class="badge">{{syncLabel}}</text></view>
+ <view wx:if="{{!identityReady}}" class="notice">{{loading ? '正在确认微信身份…' : '身份尚未确认，请联网后下拉刷新。'}}</view>
+ <view wx:if="{{error}}" class="notice error">{{error}}</view>
+ <view wx:if="{{planUpdateAvailable}}" class="notice"><view>训练安排已变更。更新今日清单，保留已完成组数和动作参数。</view><button class="secondary small-button" style="margin-top:16rpx" bindtap="updatePlan" disabled="{{busy || restOpen || !identityReady}}">更新今日清单</button></view>
+ <view wx:if="{{missingWeight}}" class="notice row between"><text class="grow">自重训练需要当前体重</text><button class="small-button" bindtap="settings">填写体重</button></view>
+ <block wx:if="{{items.length}}">
+  <view class="metrics"><view class="metric"><view class="metric-value">{{totals.completedSetCount}}<text class="muted"> / {{totals.totalSetCount}}</text></view><view class="metric-label">完成组数</view></view><view class="metric"><view class="metric-value">{{totals.volume}}</view><view class="metric-label">估算容量 · kg</view></view></view>
+  <view class="progress"><view class="progress-fill" style="width:{{percent}}%"></view></view>
+  <view wx:if="{{allDone}}" class="notice row between" style="background:#eef4f0;color:#18864b"><text class="grow">今日训练已完成</text><button class="primary small-button" bindtap="poster" disabled="{{busy}}">生成海报</button></view>
+  <view class="section"><view class="row between section-title"><text class="subheading">动作清单</text><text class="muted">{{percent}}%</text></view>
+   <view wx:for="{{items}}" wx:key="entryId" class="list-item exercise-item">
+    <view class="row between"><view class="grow"><view class="subheading {{item.checked ? 'done-name' : ''}}">{{item.name}}</view><view class="muted">{{item.summary}}</view><view class="exercise-progress"><text>{{item.checked ? '✓ 已完成' : item.count + ' / ' + item.sets + ' 组'}}</text><text>{{item.typeLabel}} · 间隔 {{item.restSeconds}} 秒</text></view></view><button class="small-button {{item.active ? 'secondary' : 'primary'}}" disabled="{{busy || !identityReady}}" data-id="{{item.entryId}}" bindtap="startExercise">{{item.active ? '收起' : item.checked ? '查看' : item.count ? '继续' : '开始'}}</button></view>
+    <view wx:if="{{item.active}}" class="set-list">
+     <view class="set-guidance">做完这一组，再确认。每一组都算数。</view>
+     <view wx:for="{{item.groups}}" wx:for-item="group" wx:key="index" class="set-row {{group.done ? 'set-done' : group.next ? 'set-next' : ''}}" data-id="{{item.entryId}}" data-index="{{group.index}}" bindtap="tapSetRow">
+      <view class="set-number">{{group.done ? '✓' : group.number}}</view><view class="grow"><view class="set-title">第 {{group.number}} 组</view><view class="muted">{{group.label}}</view></view>
+      <button wx:if="{{group.next}}" class="small-button primary set-command" disabled="{{busy || !identityReady}}" data-id="{{item.entryId}}" data-index="{{group.index}}" catchtap="completeSet">本组已完成</button>
+      <button wx:elif="{{group.undoable}}" class="small-button text-button" disabled="{{busy || !identityReady}}" data-id="{{item.entryId}}" data-index="{{group.index}}" catchtap="undoSet">撤销</button>
+      <text wx:else class="set-state">{{group.done ? '已完成' : '待完成'}}</text>
+     </view>
+    </view>
+   </view>
+  </view>
+  <view wx:if="{{totals.cardioMinutes !== '0.0'}}" class="muted" style="margin-top:24rpx">有氧 {{totals.cardioMinutes}} 分钟</view>
+  <view class="actions"><button class="secondary" bindtap="editWeek">调整本周</button></view><view wx:if="{{frozen}}" class="muted" style="margin-top:18rpx">今日动作与体重已记录</view>
+ </block>
+ <view wx:else class="empty"><view class="empty-title">{{hasPlan ? '今天是休息日' : emptyTitle}}</view><view class="muted">{{hasPlan ? '连续打卡不会断，放心去玩吧。休息也是训练的一部分。' : emptyText}}</view><view wx:if="{{hasPlan && achievement.streak}}" class="rest-streak">🔥 连续 {{achievement.streak}} 个训练日</view><view class="actions"><button wx:if="{{hasPlan}}" class="primary" bindtap="editWeek">调整本周</button><button wx:else class="primary" bindtap="plans">安排周期</button></view></view>
+</view>
+<view wx:if="{{restOpen}}" class="rest-screen" catchtouchmove="stop" role="dialog" aria-label="组间休息">
+ <scroll-view scroll-y class="rest-scroll"><view class="rest-content">
+  <view class="rest-topline"><text>IronPlan</text><text>完成 {{totals.completedCount}} / {{totals.totalCount}} 动作</text></view>
+  <view class="rest-title">{{rest.title}}</view>
+  <view class="rest-timer {{rest.remaining === 0 ? 'rest-ready' : ''}}">{{rest.remaining === 0 ? '准备就绪' : rest.timer}}</view>
+  <view class="rest-timer-note">{{rest.remaining === 0 ? (rest.overtime ? '休息已结束 ' + rest.overtime + ' 秒' : '恢复完成') : '给下一组留足力量'}}</view>
+  <view class="rest-track"><view class="rest-fill" style="width:{{rest.progress}}%"></view></view>
+  <view class="rest-next"><view class="rest-eyebrow">下一组 · {{restNext.group}} / {{restNext.total}}</view><view class="rest-exercise">{{restNext.name}}</view><view class="rest-params">{{restNext.label}}</view></view>
+  <view class="rest-stats"><view><view class="rest-stat-value">{{totals.volume}}<text> kg</text></view><view class="rest-stat-label">今日累计容量</view></view><view><view class="rest-stat-value">{{totals.completedSetCount}}<text> / {{totals.totalSetCount}}</text></view><view class="rest-stat-label">已完成组数</view></view></view>
+  <view class="rest-quote">{{rest.quote}}</view>
+  <view wx:if="{{achievement.comparison}}" class="rest-comparison">{{achievement.comparison}}</view>
+  <view class="rest-actions"><button class="rest-continue" disabled="{{rest.remaining > 0}}" bindtap="continueTraining">{{rest.remaining > 0 ? '恢复中' : '继续下一组'}}</button><button wx:if="{{rest.remaining > 0}}" class="rest-skip" bindtap="skipRest">提前结束休息</button></view>
+ </view></scroll-view>
+</view>
+<view wx:if="{{celebrationOpen}}" class="celebration-mask" catchtouchmove="stop">
+ <view class="celebration {{achievement.milestone ? 'milestone' : ''}}" role="dialog" aria-label="今日训练达成">
+  <view class="celebration-mark">🔥<text wx:if="{{achievement.milestone}}" class="milestone-badge">{{achievement.streak}}</text></view>
+  <view class="celebration-title">{{achievement.title}}</view>
+  <view class="celebration-copy">{{achievement.encouragement}}</view>
+  <view class="celebration-volume"><text class="celebration-label">{{achievement.label}}</text><view><text class="celebration-value">{{achievement.value}}</text><text class="celebration-unit"> {{achievement.unit}}</text></view></view>
+  <view wx:if="{{achievement.comparison}}" class="personal-best">{{achievement.comparison}}</view>
+  <view class="celebration-note">休息日不计入，也不会中断连胜</view>
+  <view wx:if="{{achievement.estimated}}" class="celebration-note">早期记录按现有计划计算</view>
+  <button class="celebration-share" bindtap="poster">生成海报炫耀一下</button>
+  <button class="celebration-dismiss" bindtap="dismissCelebration">太累了，明天再说</button>
+ </view>
+</view>
+<poster-preview id="poster-preview" source="{{posterSource}}" visible="{{posterOpen}}" bind:status="posterStatus" bind:close="closePoster" />
+<view wx:if="{{onboardingOpen}}" class="celebration-mask onboarding-mask" catchtouchmove="stop">
+ <view class="celebration onboarding-card" aria-role="dialog" aria-label="填写当前体重">
+  <view class="eyebrow">欢迎使用 IronPlan</view><view class="celebration-title">先填写当前体重</view>
+  <view class="celebration-copy">让每一次自重训练，都有更准确的容量记录。</view>
+  <view class="field"><text class="form-label">当前体重 · kg</text><input class="input" type="digit" value="{{onboardingWeight}}" bindinput="onboardingInput" placeholder="填写你的体重" maxlength="6" adjust-position="true" disabled="{{onboardingSaving}}" /></view>
+  <view class="onboarding-privacy">你的体重仅用于训练记录与容量估算，不会向其他用户公开，放心填写。</view>
+  <view wx:if="{{onboardingError}}" class="notice error">{{onboardingError}}</view>
+  <button class="celebration-share" loading="{{onboardingSaving}}" disabled="{{onboardingSaving || !identityReady}}" bindtap="saveOnboardingWeight">保存并开始</button>
+  <button class="celebration-dismiss" disabled="{{onboardingSaving}}" bindtap="skipOnboarding">暂时跳过</button>
+  <view class="celebration-note">以后可以在“我的”修改体重</view>
+ </view>
+</view>

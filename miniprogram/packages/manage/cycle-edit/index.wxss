@@ -1,0 +1,9 @@
+.append-controls { display:flex; flex-wrap:wrap; align-items:center; gap:14rpx; margin-top:22rpx; }
+.append-controls picker { min-width:230rpx; }
+.repeat { display:flex; align-items:center; gap:10rpx; }
+.repeat input { width:100rpx; text-align:center; }
+.week-row { padding:24rpx 0; border-bottom:1rpx solid #e8eee9; }
+.week-template { margin-top:10rpx; font-size:28rpx; line-height:1.5; }
+.week-tools { margin-top:16rpx; }
+.replace-template { padding:14rpx 20rpx; background:#eef4f0; color:#18864b; border-radius:10rpx; font-size:25rpx; }
+.current-badge { margin-left:16rpx; vertical-align:middle; }

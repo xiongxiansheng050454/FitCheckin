@@ -1,0 +1,13 @@
+<view class="page">
+ <view class="eyebrow">{{entryMode ? '计划内动作参数' : '我的动作库'}}</view><view class="heading">编辑超级组</view>
+ <view class="field"><text class="form-label">名称</text><input class="input" value="{{form.name}}" bindinput="name" maxlength="60" placeholder="例如：胸背超级组" disabled="{{!identityReady || saving}}" /></view>
+ <view class="field"><text class="form-label">组数 · 组</text><input class="input" type="number" value="{{form.sets}}" data-key="sets" bindinput="field" disabled="{{!identityReady || saving}}" /></view>
+ <view class="field"><text class="form-label">整组结束后休息 · 秒</text><input class="input" type="number" value="{{form.restSeconds}}" data-key="restSeconds" bindinput="field" disabled="{{!identityReady || saving}}" /></view>
+ <view class="section"><view class="row between section-title"><text class="subheading">组内动作</text><button class="primary small-button" bindtap="add" disabled="{{!identityReady || saving || components.length >= 10}}">添加动作</button></view>
+  <view class="muted">动作之间不休息。全部做完后，按一个动作确认本组完成。</view>
+  <view wx:for="{{components}}" wx:key="index" class="list-item"><view class="row between"><view class="grow"><view class="subheading">{{index + 1}}. {{item.name}}</view><view class="muted break">{{item.summary}}</view></view><text class="badge">{{item.typeLabel}}</text></view><view class="row wrap component-actions"><button class="secondary small-button" data-index="{{index}}" bindtap="editComponent" disabled="{{!identityReady || saving}}">编辑参数</button><button class="small-button" data-index="{{index}}" data-delta="-1" bindtap="move" disabled="{{index === 0 || !identityReady || saving}}">上移</button><button class="small-button" data-index="{{index}}" data-delta="1" bindtap="move" disabled="{{index === components.length - 1 || !identityReady || saving}}">下移</button><button class="text-button small-button" data-index="{{index}}" bindtap="remove" disabled="{{!identityReady || saving}}">移除</button></view></view>
+  <view wx:if="{{!components.length}}" class="empty"><view class="empty-title">选出你的动作组合</view><view class="muted">至少添加两个动作，可分别调整参数。</view></view>
+ </view>
+ <view wx:if="{{error}}" class="notice error">{{error}}</view><button wx:if="{{stale}}" class="secondary" style="margin-top:18rpx" bindtap="loadLatest">重新加载最新版本</button>
+ <view class="actions"><button class="primary" loading="{{saving}}" disabled="{{saving || !identityReady}}" bindtap="save">保存超级组</button></view>
+</view>

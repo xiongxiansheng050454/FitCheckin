@@ -1,0 +1,10 @@
+page { background:#f4f7f4; }
+.poster-page { padding:28rpx 32rpx calc(40rpx + env(safe-area-inset-bottom)); }
+.poster-image { display:block; width:100%; margin-top:24rpx; }
+.poster-status { min-height:260rpx; display:flex; align-items:center; justify-content:center; }
+.poster-canvas { position:fixed; left:-10000px; top:0; width:375px; height:660px; pointer-events:none; }
+.caption-select { padding:20rpx 0; border-bottom:1rpx solid #dce5dd; margin-top:14rpx; font-size:26rpx; line-height:1.5; }
+.caption-label { color:#6a756d; font-size:22rpx; margin-bottom:6rpx; }
+.caption-arrow { flex:none; font-size:30rpx; color:#18864b; }
+.poster-page .actions { flex-wrap:wrap; }
+.poster-page .actions button { min-width:240rpx; }

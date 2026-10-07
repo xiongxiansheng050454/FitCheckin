@@ -1,0 +1,13 @@
+{
+  "pages": ["pages/today/index", "pages/plans/index", "pages/stats/index"],
+  "subPackages": [
+    {"root":"packages/manage","pages":["plan-edit/index","cycle-edit/index","exercise-picker/index","exercise-edit/index","superset-edit/index","settings/index"]},
+    {"root":"packages/history","pages":["day/index"]},
+    {"root":"packages/share","pages":["poster/index"]}
+  ],
+  "window": {"navigationBarTitleText":"IronPlan","navigationBarBackgroundColor":"#FFFFFF","navigationBarTextStyle":"black","backgroundColor":"#FFFFFF","backgroundTextStyle":"dark","enablePullDownRefresh":true},
+  "tabBar": {"custom":true,"color":"#6A756D","selectedColor":"#18864B","backgroundColor":"#FFFFFF","list":[{"pagePath":"pages/today/index","text":"今日"},{"pagePath":"pages/plans/index","text":"计划"},{"pagePath":"pages/stats/index","text":"统计"}]},
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents"
+}
